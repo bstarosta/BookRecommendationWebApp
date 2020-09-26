@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "1EelvvvKEL+eO3094ZInubgHg8o9rOu+T05dyMv46gZOj9/whYbyAvma4rAWtdPMTpAI9OAr+8d1JmY6LtyhaQ==",
+  "dgSpecHash": "KhDS7y470iY1ooofpTv0T8VEhUBCZLQjE/UtvLdBmMzgzV7Gn8PGktWndxLfvjwdHBoN0WVs0AC2K2wYRlL2wA==",
   "success": true,
   "projectFilePath": "C:\\Users\\bstar\\GitHub\\BookRecommendationWebApp\\BookRecommendationWebApp\\BookRecommendationWebApp\\BookRecommendationWebApp.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\bstar\\.nuget\\packages\\automapper\\10.0.0\\automapper.10.0.0.nupkg.sha512",
+    "C:\\Users\\bstar\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\8.0.1\\automapper.extensions.microsoft.dependencyinjection.8.0.1.nupkg.sha512",
     "C:\\Users\\bstar\\.nuget\\packages\\microsoft.aspnetcore.authentication\\2.2.0\\microsoft.aspnetcore.authentication.2.2.0.nupkg.sha512",
     "C:\\Users\\bstar\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.2.0\\microsoft.aspnetcore.authentication.abstractions.2.2.0.nupkg.sha512",
     "C:\\Users\\bstar\\.nuget\\packages\\microsoft.aspnetcore.authentication.cookies\\2.2.0\\microsoft.aspnetcore.authentication.cookies.2.2.0.nupkg.sha512",
@@ -103,7 +105,7 @@
     "C:\\Users\\bstar\\.nuget\\packages\\system.objectmodel\\4.3.0\\system.objectmodel.4.3.0.nupkg.sha512",
     "C:\\Users\\bstar\\.nuget\\packages\\system.private.datacontractserialization\\4.3.0\\system.private.datacontractserialization.4.3.0.nupkg.sha512",
     "C:\\Users\\bstar\\.nuget\\packages\\system.reflection\\4.3.0\\system.reflection.4.3.0.nupkg.sha512",
-    "C:\\Users\\bstar\\.nuget\\packages\\system.reflection.emit\\4.3.0\\system.reflection.emit.4.3.0.nupkg.sha512",
+    "C:\\Users\\bstar\\.nuget\\packages\\system.reflection.emit\\4.7.0\\system.reflection.emit.4.7.0.nupkg.sha512",
     "C:\\Users\\bstar\\.nuget\\packages\\system.reflection.emit.ilgeneration\\4.3.0\\system.reflection.emit.ilgeneration.4.3.0.nupkg.sha512",
     "C:\\Users\\bstar\\.nuget\\packages\\system.reflection.emit.lightweight\\4.3.0\\system.reflection.emit.lightweight.4.3.0.nupkg.sha512",
     "C:\\Users\\bstar\\.nuget\\packages\\system.reflection.extensions\\4.3.0\\system.reflection.extensions.4.3.0.nupkg.sha512",

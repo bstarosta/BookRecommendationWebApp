@@ -18,18 +18,11 @@
                     <a class="navigation-link" asp-area="" asp-controller="Home" asp-action="Index">Browse</a>
                 </li>
                 <li>
-                    <a class="navigation-link" asp-area="" asp-controller="Home" asp-action="Index">Recommendations</a>
+                    <a class="navigation-link" asp-area="" asp-controller="Home" asp-action="Privacy">Recommendations</a>
                 </li>
             </ul>
         </nav>
-        <ul class="account-links">
-            <li>
-                <a class="account-link text-dark" asp-area="" asp-controller="Accounts" asp-action="Login">Login</a>
-            </li>
-            <li>
-                <a class="account-link text-dark" asp-area="" asp-controller="Accounts" asp-action="Register">Register</a>
-            </li>
-        </ul>
+        <partial name="_LoginPartial" />
     </div>
 
 </header>

@@ -70,7 +70,7 @@ namespace BookRecommendationWebApp.Controllers
                 }
                 return View(userRegistrationModel);
             }
-            return RedirectToAction(nameof(HomeController.Index),"Home");
+            return RedirectToAction(nameof(Login),"Account");
         }
 
         public async Task<IActionResult> Logout()

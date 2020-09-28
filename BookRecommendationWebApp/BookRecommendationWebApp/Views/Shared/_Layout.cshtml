@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using BookRecommendationWebApp.Models.Accounts
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -7,39 +10,47 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css/layout-style.css" />
+    <link href="~/chosen/chosen.min.css" rel="stylesheet" />
 </head>
 <body>
-<header>
-    <div class="border-bottom box-shadow header-bar">
-        <img class="logo" src="~/images/logo.svg"/>
-        <nav>
-            <ul class="navigation-links">
-                <li>
-                    <a class="navigation-link" asp-area="" asp-controller="Home" asp-action="Index">Browse</a>
-                </li>
-                <li>
-                    <a class="navigation-link" asp-area="" asp-controller="Home" asp-action="Privacy">Recommendations</a>
-                </li>
-            </ul>
-        </nav>
-        <partial name="_LoginPartial" />
-    </div>
+    <header>
+        <div class="border-bottom box-shadow header-bar">
+            <img class="logo" src="~/images/logo.svg" />
+            <nav>
+                <ul class="navigation-links">
+                    <li>
+                        <a class="navigation-link" asp-area="" asp-controller="Home" asp-action="Index">Browse</a>
+                    </li>
+                    <li>
+                        <a class="navigation-link" asp-area="" asp-controller="Home" asp-action="Privacy">Recommendations</a>
+                    </li>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <li>
+                            <a class="navigation-link" asp-area="" asp-controller="Books" asp-action="AddBook">Add Books</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+            <partial name="_LoginPartial" />
+        </div>
 
-</header>
-<div class="container">
-    <main role="main" class="pb-3">
-        @RenderBody()
-    </main>
-</div>
-
-<footer class="border-top footer text-muted">
+    </header>
     <div class="container">
-        &copy; 2020 - Bookworm's Advisor - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
     </div>
-</footer>
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
-@RenderSection("Scripts", required: false)
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2020 - Bookworm's Advisor - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/chosen/chosen.jquery.min.js"></script>
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

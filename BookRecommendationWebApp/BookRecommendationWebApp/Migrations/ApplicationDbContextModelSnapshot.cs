@@ -97,8 +97,8 @@ namespace BookRecommendationWebApp.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("ImageData")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<string>("ImageFile")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Isbn")
                         .HasColumnType("nvarchar(max)");

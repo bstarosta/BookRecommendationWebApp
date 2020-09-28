@@ -11,7 +11,7 @@ namespace BookRecommendationWebApp.Models
         public string Title { get; set; }
         public string Author { get; set; }
         public string Isbn { get; set; }
-        public byte[] ImageData { get; set; }
+        public string ImageFile { get; set; }
         public string Description { get; set; }
         public ICollection<BookCategory> BookCategories { get; set; }
     }

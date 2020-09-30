@@ -1,0 +1,60 @@
+﻿@model BookRecommendationWebApp.ViewModels.AddBookViewModel
+
+@{
+    ViewData["Title"] = "AddBook";
+}
+
+<h1>Add a book to database</h1>
+
+<hr/>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AddBook" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Author" class="control-label"></label>
+                <input asp-for="Author" class="form-control" />
+                <span asp-validation-for="Author" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>ISBN</label>
+                <input asp-for="Isbn" class="form-control" />
+                <span asp-validation-for="Isbn" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Cover image</label>
+                <input asp-for="ImageFile" class="form-control" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="3" type="text"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Select categories</label>
+                @Html.ListBoxFor(model => model.SelectedCategories, new MultiSelectList(Model.Categories, "CategoryId", "CategoryName"), new {id = "dropDown", multiple = "multiple", data_placeholder = "Choose categories..."})
+                <span asp-validation-for="SelectedCategories" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Add" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        $(function() {
+            $("#dropDown").chosen({ width: "100%" });
+        });
+
+    </script>
+}

@@ -19,7 +19,7 @@
             <nav>
                 <ul class="navigation-links">
                     <li>
-                        <a class="navigation-link" asp-area="" asp-controller="Home" asp-action="Index">Browse</a>
+                        <a class="navigation-link" asp-area="" asp-controller="Books" asp-action="Browse">Browse</a>
                     </li>
                     <li>
                         <a class="navigation-link" asp-area="" asp-controller="Home" asp-action="Privacy">Recommendations</a>
@@ -36,15 +36,15 @@
         </div>
 
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div>
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2020 - Bookworm's Advisor - <a asp-area="" asp-controller="Home" asp-action="Index">Browse</a>
+            &copy; 2020 - Bookworm's Advisor - <a asp-area="" asp-controller="Books" asp-action="Browse">Browse</a>
             - <a asp-area="" asp-controller="Home" asp-action="Index">Recommendations</a>
         </div>
     </footer>

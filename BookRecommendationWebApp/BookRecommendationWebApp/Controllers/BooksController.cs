@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -10,6 +9,9 @@ using BookRecommendationWebApp.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using X.PagedList;
+using static System.String;
 
 namespace BookRecommendationWebApp.Controllers
 {
@@ -25,6 +27,39 @@ namespace BookRecommendationWebApp.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
+        public IActionResult Browse(int? categoryId, string? searchInput)
+        {
+            List<Book> bookList = null;
+            Category selectedCategory = null;
+            if (categoryId==null)
+            {
+                bookList = _dbContext.Books.ToList();
+            }
+            else
+            {
+                bookList = _dbContext.Books
+                    .Where(x => x.BookCategories.Any(c => c.CategoryId == categoryId)).ToList();
+                selectedCategory = _dbContext.Categories.Find(categoryId);
+
+            }
+
+            if (!IsNullOrEmpty(searchInput))
+            {
+                bookList = bookList.Where(x => x.Title.ToUpper().Contains(searchInput.ToUpper()) || x.Author.ToUpper().Contains(searchInput.ToUpper())).ToList();
+            }
+
+            var browseBooksViewModel = new BrowseBooksViewModel()
+            {
+                Categories = _dbContext.Categories.ToList(),
+                BooksToDisplay = bookList,
+                SelectedCategory = selectedCategory,
+                SearchInput = searchInput
+            };
+            return View(browseBooksViewModel);
+        }
+
+
+
         public IActionResult AddBook()
         {
             var addBookViewModel = new AddBookViewModel {Categories = _dbContext.Categories.ToList()};
@@ -38,8 +73,7 @@ namespace BookRecommendationWebApp.Controllers
                 return View(addBookViewModel);
             else
             {
-                string coverImageFileName = addBookViewModel.Isbn;
-                UploadCoverImage(addBookViewModel);
+                string coverImageFileName = UploadCoverImage(addBookViewModel); ;
                 var book = new Book
                 {
                     Author = addBookViewModel.Author,
@@ -66,16 +100,21 @@ namespace BookRecommendationWebApp.Controllers
             }
         }
 
-        private void UploadCoverImage(AddBookViewModel addBookViewModel)
+        private string UploadCoverImage(AddBookViewModel addBookViewModel)
         {
+            string fileName = null;
+
             if (addBookViewModel.ImageFile != null)
             {
-                string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "images/covers", addBookViewModel.Isbn);
+                fileName = addBookViewModel.Isbn + "_" + addBookViewModel.ImageFile.FileName;
+                string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "images/covers", fileName);
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     addBookViewModel.ImageFile.CopyTo(fileStream);
                 }
             }
+
+            return fileName;
         }
     }
 }

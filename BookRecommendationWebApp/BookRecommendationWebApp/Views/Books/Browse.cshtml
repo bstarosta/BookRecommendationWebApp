@@ -1,0 +1,62 @@
+﻿@using BookRecommendationWebApp.Controllers
+@model BookRecommendationWebApp.ViewModels.BrowseBooksViewModel
+
+
+    <div class="grid-container">
+        <div class="category-header">
+            @if (Model.SelectedCategory == null)
+            {
+                <p>All categories</p>
+            }
+            else
+            {
+                <p>Category: @Model.SelectedCategory.CategoryName</p>
+            }
+            @if (!String.IsNullOrEmpty(Model.SearchInput))
+            {
+                <p class="search-results-message">Search results for: "@Model.SearchInput"</p>
+            }
+        </div>
+        <div class="category-sidebar">
+            <div class="category-sidebar-header">Categories</div>
+            <ul class="category-sidebar-list">
+                <li class="category-sidebar-item">
+                    <a asp-controller="Books" asp-action="Browse">> All categories</a>
+                </li>
+                @foreach (var category in Model.Categories)
+                {
+                    <li class="category-sidebar-item">
+                        <a asp-controller="Books" asp-action="Browse" asp-route-categoryId="@category.CategoryId">> @category.CategoryName</a>
+                    </li>
+                }
+            </ul>
+        </div>
+        <input asp-for="SelectedCategory" type="hidden" value=@Model.SelectedCategory />
+        <div class="search-bar">
+            <form asp-controller="Books" asp-action="Browse" method="get">
+                <div>
+                    <input name="categoryId" type="hidden" value="@Model.SelectedCategory?.CategoryId"/>
+                    <input name="searchInput" type="text">
+                    <input type="submit" value="Search"/>
+                </div>
+            </form>
+
+        </div>
+        <ul class="book-list">
+            @if (Model.BooksToDisplay.Any())
+            {
+                @foreach (var book in Model.BooksToDisplay)
+                {
+                    <li class="book-item">
+                        <p class="book-title">@book.Title</p>
+                        <img class="cover-image" src="~/images/covers/@book.ImageFile"/>
+                        <p class="book-author">@book.Author</p>
+                    </li>
+                }
+            }
+            else
+            {
+                <p class="no-results-message">No results found</p>
+            }
+        </ul>
+    </div>

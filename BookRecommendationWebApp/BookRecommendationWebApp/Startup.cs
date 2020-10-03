@@ -34,6 +34,7 @@ namespace BookRecommendationWebApp
                 .AddDefaultTokenProviders();
             services.AddAutoMapper(typeof(Startup));
             services.AddAuthentication();
+            services.AddCloudscribePagination();
             services.AddControllersWithViews();
         }
 
@@ -63,7 +64,7 @@ namespace BookRecommendationWebApp
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Books}/{action=Browse}");
             });
         }
     }

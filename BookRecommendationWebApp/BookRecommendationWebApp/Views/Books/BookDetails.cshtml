@@ -1,0 +1,18 @@
+﻿@model BookDetailsViewModel
+
+<div class="book-details-view">
+    <img class="book-details-cover" src="~/images/covers/@Model.ImageFileName"/>
+    <div class="book-info">
+        <p class="book-details-title">@Model.Title</p>
+        <p class="book-details-author">Author: @Model.Author</p>
+        <p class="book-details-isbn">ISBN-13: @Model.Isbn</p>
+        <p class="book-details-description-text">@Model.Description</p>
+        <div class="book-details-categories">
+            <text>Categories:</text>
+            @foreach (var category in Model.Categories)
+            {
+                <a asp-controller="Books" asp-action="Browse" asp-route-categoryId="@category.CategoryId">@category.CategoryName </a>
+            }
+        </div>
+    </div>
+</div>

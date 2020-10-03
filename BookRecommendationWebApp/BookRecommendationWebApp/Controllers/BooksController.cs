@@ -100,6 +100,30 @@ namespace BookRecommendationWebApp.Controllers
             }
         }
 
+        public IActionResult BookDetails(int bookId)
+        {
+            Book book = _dbContext.Books.Find(bookId);
+            if (book==null)
+            {
+                return NotFound();
+            }
+
+            List<Category> categories = _dbContext.Categories
+                .Where(c => c.BookCategories.Any(bc => bc.BookId == bookId)).ToList();
+
+            BookDetailsViewModel bookDetailsView = new BookDetailsViewModel
+            {
+                Title = book.Title,
+                Author = book.Author,
+                Isbn = book.Isbn,
+                Description = book.Description,
+                ImageFileName = book.ImageFile,
+                Categories = categories
+            };
+
+            return View(bookDetailsView);
+        }
+
         private string UploadCoverImage(AddBookViewModel addBookViewModel)
         {
             string fileName = null;

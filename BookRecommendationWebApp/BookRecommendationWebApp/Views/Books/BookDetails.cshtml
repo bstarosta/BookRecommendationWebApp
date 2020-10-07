@@ -1,4 +1,8 @@
-﻿@model BookDetailsViewModel
+﻿@using BookRecommendationWebApp.Models.Accounts
+@using Microsoft.AspNetCore.Identity
+@model BookDetailsViewModel
+@inject SignInManager<User> SignInManager
+
 
 <div class="book-details-view">
     <img class="book-details-cover" src="~/images/covers/@Model.ImageFileName"/>
@@ -15,4 +19,94 @@
             }
         </div>
     </div>
+    <div class="book-details-rating">
+        @if (SignInManager.IsSignedIn(User))
+            {
+                @if (Model.UserRating == 0)
+                {
+                    <p class="book-rating-header">Rate this book!</p>
+                    <div onmouseout="StarRateSelected()" class="book-rating-stars">
+                        @using(Html.BeginForm("BookDetails", "Books", FormMethod.Post, new{ onsubmit ="return VerifyRating()"})) 
+                        {
+                            <span id="star1" onmouseout="StarRateOut(1)" onmouseover="StarRateOver(1)" onclick="StarRateClick(1)" class="fa fa-star fa-4x"></span>
+                            <span id="star2" onmouseout="StarRateOut(2)" onmouseover="StarRateOver(2)" onclick="StarRateClick(2)" class="fa fa-star fa-4x"></span>
+                            <span id="star3" onmouseout="StarRateOut(3)" onmouseover="StarRateOver(3)" onclick="StarRateClick(3)" class="fa fa-star fa-4x"></span>
+                            <span id="star4" onmouseout="StarRateOut(4)" onmouseover="StarRateOver(4)" onclick="StarRateClick(4)" class="fa fa-star fa-4x"></span>
+                            <span id="star5" onmouseout="StarRateOut(5)" onmouseover="StarRateOver(5)" onclick="StarRateClick(5)" class="fa fa-star fa-4x"></span>
+                            <input type="hidden" name="rating" id="ratingValue" value="0"/>
+                            <input type="hidden" name="bookID" value="@Model.BookId"/>
+                            <input type="submit" value="Rate" class="btn btn-primary btn-lg active rating-button"/>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="book-rating-header">Your rating</p>
+                    <div class="book-rating-stars">
+                        @for (int i = 0; i < Model.UserRating; i++)
+                        {
+                            <span class="fa fa-star fa-4x checked"></span>
+                        }
+                        @for (int i = Model.UserRating; i < 5; i++)
+                        {
+                            <span class="fa fa-star fa-4x"></span>
+                        }
+                    </div>
+                }
+            }
+            else
+            {
+                <a class="book-rating-sign-in" asp-controller="Account" asp-action="Login">Sign in to rate this book</a>
+            }
+            <div class="book-rating-average">
+            @if (Model.RatingsCount == 0)
+            {
+                <div>This book doesn't have any reviews yet</div>
+            }
+            else
+            {
+                <div class="average-rating-text">Average rating: @Model.AverageRating </div>
+                <div class="rating-count-text">@Model.RatingsCount Ratings</div>
+            }
+        </div>
+    </div>
 </div>
+
+<script type="text/javascript">
+    function StarRateOut(rating) {
+        for (var i = 1; i <= rating; i++) {
+            $("#star" + i).attr('class', 'fa fa-star fa-4x');
+        }
+    }
+
+    function StarRateOver(rating) {
+        for (var i = 1; i <= rating; i++) {
+            $("#star" + i).attr('class', 'fa fa-star fa-4x checked');
+        }
+    }
+
+    function StarRateClick(rating) {
+        $("#ratingValue").val(rating);
+        for (var i = 1; i <= rating; i++) {
+            $("#star" + i).attr('class', 'fa fa-star fa-4x checked');
+        }
+        for (var j = rating+1; j <= 5; j++) {
+            $("#star" + j).attr('class', 'fa fa-star fa-4x');
+        }
+    }
+
+    function StarRateSelected() {
+        var rating = $("#ratingValue").val();
+        for (var i = 1; i <= rating; i++) {
+            $("#star" + i).attr('class', 'fa fa-star fa-4x checked');
+        }
+    }
+
+    function VerifyRating() {
+        if ($("#ratingValue").val() == "0")
+        {
+            alert("Please select rating.");
+            return false;
+        }
+    }
+</script>

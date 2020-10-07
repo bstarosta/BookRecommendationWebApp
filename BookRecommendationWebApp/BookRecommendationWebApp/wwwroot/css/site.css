@@ -239,3 +239,66 @@ body {
     padding-top: 20px;
     font-size: 20px;
 }
+
+.book-details-rating {
+    grid-column: 3;
+    margin: 200px 50px 0 100px;
+    height: 250px;
+    border: 1px solid black;
+    border-radius: 10px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-rows: 25% 45% 30%
+}
+
+.book-rating-average {
+    font-family: "Monsterrat", sans-serif;
+    font-size: 20px;
+    padding: 0 0 20px 30px;
+    grid-row: 3;
+    display: inline-block;
+}
+
+.book-rating-header {
+    font-family: "Monsterrat", sans-serif;
+    font-size: 24px;
+    font-weight: 500;
+    margin: 20px 0 0 30px;
+    grid-row: 1;
+    align-self: center;
+}
+
+.book-rating-sign-in {
+    font-family: "Monsterrat", sans-serif;
+    font-size: 30px;
+    font-weight: 500;
+    grid-row: 1/span 2;
+    align-self: center;
+    margin-left: 30px;
+}
+
+
+.checked {
+    color: orange;
+}
+
+.book-rating-stars {
+    margin-left:30px;
+    grid-row: 2;
+    align-self: center;
+}
+
+.rating-count-text {
+    margin-left: 80px;
+    display: inline-block;
+}
+
+.average-rating-text {
+    display: inline-block;
+}
+
+.rating-button {
+    margin-left: 20px;
+    margin-bottom: 30px;
+    grid-row: 2;
+}

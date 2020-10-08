@@ -84,7 +84,7 @@ namespace BookRecommendationWebApp.Controllers
             if (Url.IsLocalUrl(returnUrl))
                 return Redirect(returnUrl);
             else
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction(nameof(BooksController.Browse), "Books");
 
         }
     }

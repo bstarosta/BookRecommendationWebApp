@@ -15,7 +15,7 @@ namespace BookRecommendationWebApp.Models
         public string ImageFileName { get; set; }
         public List<Category> Categories { get; set; }
         public int UserRating { get; set; }
-        public float AverageRating { get; set; }
+        public double AverageRating { get; set; }
         public int RatingsCount { get; set; }
     }
 }

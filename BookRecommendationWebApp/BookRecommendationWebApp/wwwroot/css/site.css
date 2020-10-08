@@ -66,6 +66,10 @@ body {
     line-height: 60px; /* Vertically center the text there */
 }
 
+.create-acc-link {
+    font-size: 18px;
+}
+
 .grid-container {
     display: grid;
     grid-column-gap: 30px;
@@ -301,4 +305,63 @@ body {
     margin-left: 20px;
     margin-bottom: 30px;
     grid-row: 2;
+}
+
+.review-list {
+    margin: 50px 22%;
+    list-style-position: inside;
+    padding: 0 0 50px 0;
+}
+
+.review-list-item {
+    border: 1px solid black;
+    border-radius: 10px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 70px auto 120px;
+    grid-template-rows: 30px 30px auto;
+    margin: 20px 0;
+    padding: 0;
+}
+
+.review-book-title .review-book-author .review-date {
+    font-family: "Monsterrat", sans-serif;
+    font-weight: 400;
+}
+
+.review-book-title {
+    font-size: 20px;
+    grid-column: 2;
+    grid-row: 1;
+    text-decoration: none;
+    color: black;
+}
+
+.review-book-title:hover {
+    color: black
+}
+
+.review-book-author {
+    font-size: 16px;
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.review-cover-image {
+    width: 60px;
+    height: 90px;
+    grid-column: 1;
+    grid-row: 1/span 3;
+    padding: 10px
+}
+
+.review-rating {
+    grid-column: 3;
+    grid-row: 1/span 3;
+}
+
+.review-date {
+    font-size: 16px;
+    margin: 10px 10px 10px 0;
+    padding: 0;
 }

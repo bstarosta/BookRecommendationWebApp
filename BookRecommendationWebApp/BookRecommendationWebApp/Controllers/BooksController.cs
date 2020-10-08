@@ -169,15 +169,15 @@ namespace BookRecommendationWebApp.Controllers
             return fileName;
         }
 
-        private float CalculateAverageRating(List<Review> reviews)
+        private double CalculateAverageRating(List<Review> reviews)
         {
-            float ratingSum = 0;
+            double ratingSum = 0;
             foreach (var review in reviews)
             {
                 ratingSum += review.Rating;
             }
 
-            return ratingSum / reviews.Count;
+            return Math.Round(ratingSum / reviews.Count, 2);
         }
     }
 }

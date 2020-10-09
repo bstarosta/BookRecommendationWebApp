@@ -9,5 +9,6 @@ namespace BookRecommendationWebApp.Models.Accounts
     public class User : IdentityUser
     {
         public ICollection<Review> Reviews { get; set; }
+        public ICollection<UserPreference> UserPreferences { get; set; }
     }
 }

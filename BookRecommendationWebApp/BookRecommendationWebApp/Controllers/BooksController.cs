@@ -56,7 +56,7 @@ namespace BookRecommendationWebApp.Controllers
 
             var browseBooksViewModel = new BrowseBooksViewModel()
             {
-                Categories = _dbContext.Categories.ToList(),
+                Categories = _dbContext.Categories.OrderBy(c=>c.CategoryName).ToList(),
                 BooksToDisplay = bookList,
                 SelectedCategory = selectedCategory,
                 SearchInput = searchInput
@@ -149,6 +149,17 @@ namespace BookRecommendationWebApp.Controllers
                 Date = DateTime.Now
             };
             _dbContext.Reviews.Add(review);
+            List<Category> categories = _dbContext.Categories
+                .Where(c => c.BookCategories.Any(bc => bc.BookId == bookID)).ToList();
+
+            List<UserPreference> userPreferences = _dbContext.UserPreferences.Where(up =>
+                categories.Contains(up.Category) && up.UserId == _userManager.GetUserId(this.User)).ToList();
+
+            for (int i = 0; i < userPreferences.Count; i++)
+            {
+                userPreferences[i].Preference = 0.1 *(rating - 3) + 0.05;
+            }
+
             _dbContext.SaveChanges();
             return RedirectToAction("BookDetails", new { bookId = bookID});
         }

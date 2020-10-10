@@ -12,6 +12,6 @@ namespace BookRecommendationWebApp.Models
         public User User { get; set; }
         public int CategoryId { get; set; }
         public Category Category { get; set; }
-        public int Preference { get; set; }
+        public double Preference { get; set; }
     }
 }

@@ -1,13 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.AccessControl;
 using System.Threading.Tasks;
 using BookRecommendationWebApp.Data;
 using BookRecommendationWebApp.Models;
+using BookRecommendationWebApp.Models.Accounts;
 using BookRecommendationWebApp.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using X.PagedList;
@@ -20,11 +24,13 @@ namespace BookRecommendationWebApp.Controllers
 
         private readonly ApplicationDbContext _dbContext;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly UserManager<User> _userManager;
 
-        public BooksController(ApplicationDbContext dbContext, IWebHostEnvironment webHostEnvironment)
+        public BooksController(ApplicationDbContext dbContext, IWebHostEnvironment webHostEnvironment, UserManager<User> userManager)
         {
             _dbContext = dbContext;
             _webHostEnvironment = webHostEnvironment;
+            _userManager = userManager;
         }
 
         public IActionResult Browse(int? categoryId, string? searchInput)
@@ -50,7 +56,7 @@ namespace BookRecommendationWebApp.Controllers
 
             var browseBooksViewModel = new BrowseBooksViewModel()
             {
-                Categories = _dbContext.Categories.ToList(),
+                Categories = _dbContext.Categories.OrderBy(c=>c.CategoryName).ToList(),
                 BooksToDisplay = bookList,
                 SelectedCategory = selectedCategory,
                 SearchInput = searchInput
@@ -100,6 +106,64 @@ namespace BookRecommendationWebApp.Controllers
             }
         }
 
+        public IActionResult BookDetails(int bookId)
+        {
+            Book book = _dbContext.Books.Find(bookId);
+            if (book==null)
+            {
+                return NotFound();
+            }
+
+            List<Category> categories = _dbContext.Categories
+                .Where(c => c.BookCategories.Any(bc => bc.BookId == bookId)).ToList();
+
+            var ratingQuery = _dbContext.Reviews.Where(r =>
+                r.User.Id == _userManager.GetUserId(this.User) && r.Book.BookId == bookId);
+
+            var allRatingsQuery = _dbContext.Reviews.Where(r => r.Book.BookId == bookId);
+
+            BookDetailsViewModel bookDetailsView = new BookDetailsViewModel
+            {
+                BookId = bookId,
+                Title = book.Title,
+                Author = book.Author,
+                Isbn = book.Isbn,
+                Description = book.Description,
+                ImageFileName = book.ImageFile,
+                Categories = categories,
+                UserRating = ratingQuery.Any() ? ratingQuery.First().Rating : 0,
+                AverageRating = allRatingsQuery.Any() ? CalculateAverageRating(allRatingsQuery.ToList()) : 0,
+                RatingsCount = allRatingsQuery.Count()
+            };
+            return View(bookDetailsView);
+        }
+
+        [HttpPost]
+        public IActionResult BookDetails(int rating, int bookID)
+        {
+            var review = new Review()
+            {
+                Book = _dbContext.Books.Find(bookID),
+                User = _dbContext.Users.Find(_userManager.GetUserId(this.User)),
+                Rating = rating,
+                Date = DateTime.Now
+            };
+            _dbContext.Reviews.Add(review);
+            List<Category> categories = _dbContext.Categories
+                .Where(c => c.BookCategories.Any(bc => bc.BookId == bookID)).ToList();
+
+            List<UserPreference> userPreferences = _dbContext.UserPreferences.Where(up =>
+                categories.Contains(up.Category) && up.UserId == _userManager.GetUserId(this.User)).ToList();
+
+            for (int i = 0; i < userPreferences.Count; i++)
+            {
+                userPreferences[i].Preference = 0.1 *(rating - 3) + 0.05;
+            }
+
+            _dbContext.SaveChanges();
+            return RedirectToAction("BookDetails", new { bookId = bookID});
+        }
+
         private string UploadCoverImage(AddBookViewModel addBookViewModel)
         {
             string fileName = null;
@@ -115,6 +179,17 @@ namespace BookRecommendationWebApp.Controllers
             }
 
             return fileName;
+        }
+
+        private double CalculateAverageRating(List<Review> reviews)
+        {
+            double ratingSum = 0;
+            foreach (var review in reviews)
+            {
+                ratingSum += review.Rating;
+            }
+
+            return Math.Round(ratingSum / reviews.Count, 2);
         }
     }
 }

@@ -48,7 +48,7 @@
                 @foreach (var book in Model.BooksToDisplay)
                 {
                     <li class="book-item">
-                        <p class="book-title">@book.Title</p>
+                        <a asp-controller="Books" asp-action="BookDetails" asp-route-bookId="@book.BookId" class="book-title">@book.Title</a>
                         <img class="cover-image" src="~/images/covers/@book.ImageFile"/>
                         <p class="book-author">@book.Author</p>
                     </li>

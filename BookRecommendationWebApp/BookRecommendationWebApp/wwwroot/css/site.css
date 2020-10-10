@@ -4,72 +4,70 @@ for details on configuring this project to bundle and minify static web assets. 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap');
 
 a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
 }
 
 /* Provide sufficient contrast against white background */
-a {
-  color: #0366d6;
-}
+
+a { color: #0366d6; }
 
 .btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
 }
 
 /* Sticky footer styles
 -------------------------------------------------- */
-html {
-  font-size: 14px;
-}
+
+html { font-size: 14px; }
+
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html { font-size: 16px; }
 }
 
-.border-top {
-  border-top: 1px solid #e5e5e5;
-}
-.border-bottom {
-  border-bottom: 1px solid #e5e5e5;
-}
+.border-top { border-top: 1px solid #e5e5e5; }
 
-.box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
-}
+.border-bottom { border-bottom: 1px solid #e5e5e5; }
+
+.box-shadow { box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
 
 button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+    font-size: 1rem;
+    line-height: inherit;
 }
 
 /* Sticky footer styles
 -------------------------------------------------- */
+
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  /* Margin bottom by footer height */
+    /* Margin bottom by footer height */
     margin-bottom: 60px;
 }
+
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px; /* Vertically center the text there */
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px; /* Vertically center the text there */
+}
+
+.create-acc-link {
+    font-size: 18px;
 }
 
 .grid-container {
@@ -81,7 +79,7 @@ body {
 
 .category-sidebar {
     grid-column: 2;
-    grid-row: 2 / span 2;
+    grid-row: 2/span 2;
 }
 
 .category-sidebar-header {
@@ -106,9 +104,7 @@ body {
     transition: 0.4s ease
 }
 
-.category-sidebar-item:hover {
-    background-color: lightskyblue;
-}
+.category-sidebar-item:hover { background-color: lightskyblue; }
 
 .category-sidebar ul a {
     display: block;
@@ -162,6 +158,12 @@ body {
     font-size: 24px;
     grid-column: 2;
     grid-row: 1;
+    text-decoration: none;
+    color: black;
+}
+
+.book-title:hover {
+    color: black
 }
 
 .book-author {
@@ -195,4 +197,171 @@ body {
     padding-top: 50px;
 }
 
+.book-details-view {
+    display: grid;
+    grid-template-columns: 20% auto 40%;
+}
 
+.book-details-cover {
+    padding-top: 50px;
+    grid-column: 1;
+    justify-self: center;
+    width: 80%;
+}
+
+.book-details-title {
+    padding: 50px 0 0 0;
+    margin: 0;
+    font-weight: 500;
+    font-size: 48px;
+}
+
+.book-details-author {
+    padding: 0;
+    margin: 0;
+    font-weight: 500;
+    font-size: 26px;
+}
+
+.book-info {
+    grid-column: 2;
+    font-family: "Monsterrat", sans-serif;
+}
+
+.book-details-isbn {
+    font-size: 18px;
+    padding-top: 10px;
+}
+
+
+.book-details-description-text {
+    padding-top: 80px;
+    font-size: 16px;
+}
+
+.book-details-categories {
+    padding-top: 20px;
+    font-size: 20px;
+}
+
+.book-details-rating {
+    grid-column: 3;
+    margin: 200px 50px 0 100px;
+    height: 250px;
+    border: 1px solid black;
+    border-radius: 10px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-rows: 25% 45% 30%
+}
+
+.book-rating-average {
+    font-family: "Monsterrat", sans-serif;
+    font-size: 20px;
+    padding: 0 0 20px 30px;
+    grid-row: 3;
+    display: inline-block;
+}
+
+.book-rating-header {
+    font-family: "Monsterrat", sans-serif;
+    font-size: 24px;
+    font-weight: 500;
+    margin: 20px 0 0 30px;
+    grid-row: 1;
+    align-self: center;
+}
+
+.book-rating-sign-in {
+    font-family: "Monsterrat", sans-serif;
+    font-size: 30px;
+    font-weight: 500;
+    grid-row: 1/span 2;
+    align-self: center;
+    margin-left: 30px;
+}
+
+
+.checked {
+    color: orange;
+}
+
+.book-rating-stars {
+    margin-left:30px;
+    grid-row: 2;
+    align-self: center;
+}
+
+.rating-count-text {
+    margin-left: 80px;
+    display: inline-block;
+}
+
+.average-rating-text {
+    display: inline-block;
+}
+
+.rating-button {
+    margin-left: 20px;
+    margin-bottom: 30px;
+    grid-row: 2;
+}
+
+.review-list {
+    margin: 50px 22%;
+    list-style-position: inside;
+    padding: 0 0 50px 0;
+}
+
+.review-list-item {
+    border: 1px solid black;
+    border-radius: 10px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 70px auto 120px;
+    grid-template-rows: 30px 30px auto;
+    margin: 20px 0;
+    padding: 0;
+}
+
+.review-book-title .review-book-author .review-date {
+    font-family: "Monsterrat", sans-serif;
+    font-weight: 400;
+}
+
+.review-book-title {
+    font-size: 20px;
+    grid-column: 2;
+    grid-row: 1;
+    text-decoration: none;
+    color: black;
+}
+
+.review-book-title:hover {
+    color: black
+}
+
+.review-book-author {
+    font-size: 16px;
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.review-cover-image {
+    width: 60px;
+    height: 90px;
+    grid-column: 1;
+    grid-row: 1/span 3;
+    padding: 10px
+}
+
+.review-rating {
+    grid-column: 3;
+    grid-row: 1/span 3;
+}
+
+.review-date {
+    font-size: 16px;
+    margin: 10px 10px 10px 0;
+    padding: 0;
+}

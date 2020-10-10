@@ -1,0 +1,34 @@
+﻿@using System.Globalization
+@model List<Review>
+
+
+<h1 style="margin:50px 22% 50px 22%">Your reviews</h1>
+
+<ul class="review-list">
+    @if (Model.Any())
+    {
+        @foreach (var review in Model)
+        {
+            <li class="review-list-item">
+                <a asp-controller="Books" asp-action="BookDetails" asp-route-bookId="@review.Book.BookId" class="review-book-title">@review.Book.Title</a>
+                <img class="review-cover-image" src="~/images/covers/@review.Book.ImageFile"/>
+                <p class="review-book-author">@review.Book.Author</p>
+                <div class="review-rating">
+                    <p class="review-date">@review.Date.ToString("dd-MMM-yyyy", new CultureInfo("en-GB"))</p>
+                    @for (int i = 0; i < review.Rating; i++)
+                    {
+                        <span class="fa fa-star checked"></span>
+                    }
+                    @for (int i = review.Rating; i < 5; i++)
+                    {
+                        <span class="fa fa-star"></span>
+                    }
+                </div>
+            </li>
+        }
+    }
+    else
+    {
+        <p class="no-results-message">No reviews found</p>
+    }
+</ul>

@@ -10,5 +10,6 @@ namespace BookRecommendationWebApp.Models
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
         public ICollection<BookCategory> BookCategories { get; set; }
+        public ICollection<UserPreference> UserPreferences { get; set; }
     }
 }

@@ -19,9 +19,12 @@ namespace BookRecommendationWebApp.Data
         public DbSet<Book> Books { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<BookCategory> BookCategories { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<UserPreference> UserPreferences { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
             builder.Entity<BookCategory>()
                 .HasKey(bc => new { bc.BookId, bc.CategoryId });
             builder.Entity<BookCategory>()
@@ -32,7 +35,21 @@ namespace BookRecommendationWebApp.Data
                 .HasOne(bc => bc.Category)
                 .WithMany(c => c.BookCategories)
                 .HasForeignKey(bc => bc.CategoryId);
-            base.OnModelCreating(builder);
+            builder.Entity<User>()
+                .HasMany(u => u.Reviews)
+                .WithOne(r => r.User);
+            builder.Entity<Book>()
+                .HasMany(b => b.Reviews)
+                .WithOne(r => r.Book);
+            builder.Entity<UserPreference>()
+                .HasKey(up => new {up.UserId, up.CategoryId});
+            builder.Entity<User>()
+                .HasMany(u => u.UserPreferences)
+                .WithOne(up => up.User);
+            builder.Entity<Category>()
+                .HasMany(c => c.UserPreferences)
+                .WithOne(up => up.Category);
+
         }
     }
 }

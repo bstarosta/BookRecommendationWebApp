@@ -4,14 +4,16 @@ using BookRecommendationWebApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BookRecommendationWebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201004161751_AddReviews")]
+    partial class AddReviews
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -169,24 +171,6 @@ namespace BookRecommendationWebApp.Migrations
                     b.ToTable("Reviews");
                 });
 
-            modelBuilder.Entity("BookRecommendationWebApp.Models.UserPreference", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Preference")
-                        .HasColumnType("float");
-
-                    b.HasKey("UserId", "CategoryId");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("UserPreferences");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -342,21 +326,6 @@ namespace BookRecommendationWebApp.Migrations
                     b.HasOne("BookRecommendationWebApp.Models.Accounts.User", "User")
                         .WithMany("Reviews")
                         .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("BookRecommendationWebApp.Models.UserPreference", b =>
-                {
-                    b.HasOne("BookRecommendationWebApp.Models.Category", "Category")
-                        .WithMany("UserPreferences")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BookRecommendationWebApp.Models.Accounts.User", "User")
-                        .WithMany("UserPreferences")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

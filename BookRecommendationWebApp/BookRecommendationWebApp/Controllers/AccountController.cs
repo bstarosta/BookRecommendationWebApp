@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using BookRecommendationWebApp.Data;
+using BookRecommendationWebApp.Models;
 using BookRecommendationWebApp.Models.Accounts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,12 +16,14 @@ namespace BookRecommendationWebApp.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IMapper _mapper;
+        private readonly ApplicationDbContext _dbContext;
 
-        public AccountController(UserManager<User> userManager, IMapper mapper, SignInManager<User> signInManager)
+        public AccountController(UserManager<User> userManager, IMapper mapper, SignInManager<User> signInManager, ApplicationDbContext dbContext)
         {
             _userManager = userManager;
             _mapper = mapper;
             _signInManager = signInManager;
+            _dbContext = dbContext;
         }
 
         [HttpGet]
@@ -70,6 +74,17 @@ namespace BookRecommendationWebApp.Controllers
                 }
                 return View(userRegistrationModel);
             }
+
+            List<Category> categories = _dbContext.Categories.ToList();
+            User newUser = await _userManager.FindByNameAsync(userRegistrationModel.UserName);
+            foreach (var category in categories)
+            {
+              await _dbContext.UserPreferences.AddAsync(new UserPreference
+                    {User = newUser , Category = category, Preference = 0});
+            }
+
+            await _dbContext.SaveChangesAsync();
+
             return RedirectToAction(nameof(Login),"Account");
         }
 
@@ -84,7 +99,7 @@ namespace BookRecommendationWebApp.Controllers
             if (Url.IsLocalUrl(returnUrl))
                 return Redirect(returnUrl);
             else
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction(nameof(BooksController.Browse), "Books");
 
         }
     }

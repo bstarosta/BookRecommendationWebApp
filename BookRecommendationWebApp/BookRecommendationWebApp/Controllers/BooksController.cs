@@ -9,6 +9,7 @@ using BookRecommendationWebApp.Data;
 using BookRecommendationWebApp.Models;
 using BookRecommendationWebApp.Models.Accounts;
 using BookRecommendationWebApp.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -46,7 +47,6 @@ namespace BookRecommendationWebApp.Controllers
                 bookList = _dbContext.Books
                     .Where(x => x.BookCategories.Any(c => c.CategoryId == categoryId)).ToList();
                 selectedCategory = _dbContext.Categories.Find(categoryId);
-
             }
 
             if (!IsNullOrEmpty(searchInput))
@@ -157,11 +157,33 @@ namespace BookRecommendationWebApp.Controllers
 
             for (int i = 0; i < userPreferences.Count; i++)
             {
-                userPreferences[i].Preference = 0.1 *(rating - 3) + 0.05;
+                userPreferences[i].Preference += 0.1 *(rating - 3) + 0.05;
             }
 
             _dbContext.SaveChanges();
             return RedirectToAction("BookDetails", new { bookId = bookID});
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Recommendations()
+        {
+            User user = await _userManager.GetUserAsync(this.User);
+            List<UserPreference> userPreferences = _dbContext.UserPreferences
+                .Where(up => up.UserId == _userManager.GetUserId(this.User)).ToList();
+            List<Book> books = _dbContext.Books.Where(b => b.Reviews.All(r => r.User != user)).ToList();
+
+            for(int i=0; i<books.Count; i++)
+            {
+                List<Category> categories = _dbContext.Categories
+                    .Where(c => c.BookCategories.Any(bc => bc.BookId == books[i].BookId)).ToList();
+                books[i].UserPreferenceValue =
+                    CalculatePreference(userPreferences.Where(up => categories.Contains(up.Category)).ToList());
+
+            }
+
+            List<Book> recommendations = books.OrderByDescending(b => b.UserPreferenceValue).Take(10).ToList();
+
+            return View(recommendations);
         }
 
         private string UploadCoverImage(AddBookViewModel addBookViewModel)
@@ -190,6 +212,17 @@ namespace BookRecommendationWebApp.Controllers
             }
 
             return Math.Round(ratingSum / reviews.Count, 2);
+        }
+
+        private double CalculatePreference(List<UserPreference> preferences)
+        {
+            double sum = 0;
+            foreach (var preference in preferences)
+            {
+                sum += preference.Preference;
+            }
+
+            return sum / preferences.Count;
         }
     }
 }

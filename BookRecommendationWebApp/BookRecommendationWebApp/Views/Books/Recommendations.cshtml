@@ -1,0 +1,20 @@
+﻿@model List<Book>
+
+<h1 style="margin: 50px 15%">Your recommendations</h1>
+
+
+@{
+    int counter = 1;
+}
+<ul class="recommendation-list">
+    @foreach (var book in Model)
+    {
+        <li class="book-item">
+            <a asp-controller="Books" asp-action="BookDetails" asp-route-bookId="@book.BookId" class="book-title">@book.Title</a>
+            <img class="cover-image" src="~/images/covers/@book.ImageFile"/>
+            <p class="book-author">@book.Author</p>
+            <p class="recommendation-position">#@counter</p>
+            @{ counter++; }
+        </li>
+    }
+</ul>

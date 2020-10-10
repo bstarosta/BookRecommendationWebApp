@@ -365,3 +365,18 @@ body {
     margin: 10px 10px 10px 0;
     padding: 0;
 }
+
+.recommendation-position {
+    font-family: "Monsterrat", sans-serif;
+    font-weight: 400;
+    font-size: 24px;
+    grid-column: 3;
+    grid-row: 1/span 3;
+    align-self: center;
+}
+
+.recommendation-list {
+    margin: 50px 15%;
+    list-style-position: inside;
+    padding: 0 0 50px 0;
+}

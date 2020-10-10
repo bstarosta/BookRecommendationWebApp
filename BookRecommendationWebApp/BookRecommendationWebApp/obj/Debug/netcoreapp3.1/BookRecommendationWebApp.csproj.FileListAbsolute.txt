@@ -430,7 +430,6 @@ C:\Users\bstar\GitHub\BookRecommendationWebApp\BookRecommendationWebApp\BookReco
 C:\Users\bstar\GitHub\BookRecommendationWebApp\BookRecommendationWebApp\BookRecommendationWebApp\bin\Debug\netcoreapp3.1\X.PagedList.dll
 C:\Users\bstar\GitHub\BookRecommendationWebApp\BookRecommendationWebApp\BookRecommendationWebApp\bin\Debug\netcoreapp3.1\X.PagedList.Mvc.Core.dll
 C:\Users\bstar\GitHub\BookRecommendationWebApp\BookRecommendationWebApp\BookRecommendationWebApp\bin\Debug\netcoreapp3.1\X.PagedList.Web.Common.dll
-C:\Users\bstar\GitHub\BookRecommendationWebApp\BookRecommendationWebApp\BookRecommendationWebApp\obj\Debug\netcoreapp3.1\Razor\Views\Books\BookListPartial.cshtml.g.cs
 C:\Users\bstar\GitHub\BookRecommendationWebApp\BookRecommendationWebApp\BookRecommendationWebApp\bin\Debug\netcoreapp3.1\cloudscribe.Pagination.Models.dll
 C:\Users\bstar\GitHub\BookRecommendationWebApp\BookRecommendationWebApp\BookRecommendationWebApp\bin\Debug\netcoreapp3.1\cloudscribe.Web.Pagination.dll
 C:\Users\bstar\GitHub\BookRecommendationWebApp\BookRecommendationWebApp\BookRecommendationWebApp\obj\Debug\netcoreapp3.1\BookRecommendationWebApp.csproj.CoreCompileInputs.cache
@@ -438,3 +437,4 @@ C:\Users\bstar\GitHub\BookRecommendationWebApp\BookRecommendationWebApp\BookReco
 C:\Users\bstar\GitHub\BookRecommendationWebApp\BookRecommendationWebApp\BookRecommendationWebApp\obj\Debug\netcoreapp3.1\BookRecommendationWebApp.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\bstar\GitHub\BookRecommendationWebApp\BookRecommendationWebApp\BookRecommendationWebApp\obj\Debug\netcoreapp3.1\Razor\Views\Books\BookDetails.cshtml.g.cs
 C:\Users\bstar\GitHub\BookRecommendationWebApp\BookRecommendationWebApp\BookRecommendationWebApp\obj\Debug\netcoreapp3.1\Razor\Views\Reviews\UserReviews.cshtml.g.cs
+C:\Users\bstar\GitHub\BookRecommendationWebApp\BookRecommendationWebApp\BookRecommendationWebApp\obj\Debug\netcoreapp3.1\Razor\Views\Books\Recommendations.cshtml.g.cs

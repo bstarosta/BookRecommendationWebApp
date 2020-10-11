@@ -1,20 +1,38 @@
-﻿@model List<Book>
-
-<h1 style="margin: 50px 15%">Your recommendations</h1>
-
+﻿@model RecommendationsViewModel
 
 @{
     int counter = 1;
 }
-<ul class="recommendation-list">
-    @foreach (var book in Model)
-    {
-        <li class="book-item">
-            <a asp-controller="Books" asp-action="BookDetails" asp-route-bookId="@book.BookId" class="book-title">@book.Title</a>
-            <img class="cover-image" src="~/images/covers/@book.ImageFile"/>
-            <p class="book-author">@book.Author</p>
-            <p class="recommendation-position">#@counter</p>
-            @{ counter++; }
-        </li>
-    }
-</ul>
+
+@if (Model.ProvidedEnoughReviews)
+{
+    <div class="recommendation-info">
+        <p class="recommendation-info-header">Your recommendations</p>
+        <p>Here is a list of recommended books for you to read. We base our recommendations on your activity and reviews.</p>
+    </div>
+
+
+
+    <ul class="recommendation-list">
+        @foreach (var book in Model.RecommendedBooks)
+        {
+            <li class="book-item">
+                <a asp-controller="Books" asp-action="BookDetails" asp-route-bookId="@book.BookId" class="book-title">@book.Title</a>
+                <img class="cover-image" src="~/images/covers/@book.ImageFile"/>
+                <p class="book-author">@book.Author</p>
+                <p class="recommendation-position">#@counter</p>
+                @{ counter++; }
+            </li>
+        }
+    </ul>
+
+}
+else
+{
+    <div class="recommendation-info">
+        <p class="recommendation-info-header">We need more information</p>
+        <p>We base our recommendations on your activity and reviews. In order to provide accurate recommendations we need you
+            to review at least three books from our library</p>
+        <a asp-controller="Books" asp-action="Browse">You can browse our library here</a>
+    </div>
+}

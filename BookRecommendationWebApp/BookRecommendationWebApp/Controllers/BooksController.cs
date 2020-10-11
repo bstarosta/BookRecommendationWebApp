@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Security.AccessControl;
 using System.Threading.Tasks;
+using BookRecommendationWebApp.API;
 using BookRecommendationWebApp.Data;
 using BookRecommendationWebApp.Models;
 using BookRecommendationWebApp.Models.Accounts;
@@ -106,7 +107,7 @@ namespace BookRecommendationWebApp.Controllers
             }
         }
 
-        public IActionResult BookDetails(int bookId)
+        public async Task<IActionResult> BookDetails(int bookId)
         {
             Book book = _dbContext.Books.Find(bookId);
             if (book==null)
@@ -120,8 +121,6 @@ namespace BookRecommendationWebApp.Controllers
             var ratingQuery = _dbContext.Reviews.Where(r =>
                 r.User.Id == _userManager.GetUserId(this.User) && r.Book.BookId == bookId);
 
-            var allRatingsQuery = _dbContext.Reviews.Where(r => r.Book.BookId == bookId);
-
             BookDetailsViewModel bookDetailsView = new BookDetailsViewModel
             {
                 BookId = bookId,
@@ -132,8 +131,9 @@ namespace BookRecommendationWebApp.Controllers
                 ImageFileName = book.ImageFile,
                 Categories = categories,
                 UserRating = ratingQuery.Any() ? ratingQuery.First().Rating : 0,
-                AverageRating = allRatingsQuery.Any() ? CalculateAverageRating(allRatingsQuery.ToList()) : 0,
-                RatingsCount = allRatingsQuery.Count()
+                BwaRating = GetBwaRating(bookId),
+                GoogleBooksRating = await GetGoogleBooksRating(book.Isbn)
+
             };
             return View(bookDetailsView);
         }
@@ -181,9 +181,13 @@ namespace BookRecommendationWebApp.Controllers
 
             }
 
-            List<Book> recommendations = books.OrderByDescending(b => b.UserPreferenceValue).Take(10).ToList();
+            RecommendationsViewModel recommendationsViewModel = new RecommendationsViewModel
+            {
+                RecommendedBooks = books.OrderByDescending(b => b.UserPreferenceValue).Take(10).ToList(),
+                ProvidedEnoughReviews = _dbContext.Reviews.Count(r => r.User == user) >= 3
+            };
 
-            return View(recommendations);
+            return View(recommendationsViewModel);
         }
 
         private string UploadCoverImage(AddBookViewModel addBookViewModel)
@@ -201,6 +205,29 @@ namespace BookRecommendationWebApp.Controllers
             }
 
             return fileName;
+        }
+
+        private Rating GetBwaRating(int bookId)
+        {
+            var allRatingsQuery = _dbContext.Reviews.Where(r => r.Book.BookId == bookId);
+
+            return new Rating
+            {
+                AverageRating = allRatingsQuery.Any() ? CalculateAverageRating(allRatingsQuery.ToList()) : 0,
+                RatingsCount = allRatingsQuery.Count()
+            };
+        }
+
+        private async Task<Rating> GetGoogleBooksRating(string isbn)
+        {
+
+            GoogleBooksApiResponse response = await GoogleBooksApiProcessor.GetBookByIsbn(isbn);
+
+            return new Rating
+            {
+                AverageRating = response.Items?[0].VolumeInfo.AverageRating ?? 0,
+                RatingsCount = response.Items?[0].VolumeInfo.RatingsCount ?? 0
+            };
         }
 
         private double CalculateAverageRating(List<Review> reviews)

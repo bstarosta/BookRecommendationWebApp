@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using BookRecommendationWebApp.API;
 using BookRecommendationWebApp.Data;
 using BookRecommendationWebApp.Models.Accounts;
 using Microsoft.AspNetCore.Builder;
@@ -36,6 +37,7 @@ namespace BookRecommendationWebApp
             services.AddAuthentication();
             services.AddCloudscribePagination();
             services.AddControllersWithViews();
+            ApiHelper.InitializeClient();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

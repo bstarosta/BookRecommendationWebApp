@@ -240,31 +240,45 @@ body {
 }
 
 .book-details-categories {
-    padding-top: 20px;
+    padding: 20px 0;
     font-size: 20px;
 }
 
 .book-details-rating {
+    font-family: "Monsterrat", sans-serif;
     grid-column: 3;
-    margin: 200px 50px 0 100px;
-    height: 250px;
+    margin: 150px 50px 0 100px;
+    height: 350px;
     border: 1px solid black;
     border-radius: 10px;
     box-sizing: border-box;
     display: grid;
-    grid-template-rows: 25% 45% 30%
+    grid-template-rows: 50px 120px 90px 90px;
 }
 
 .book-rating-average {
-    font-family: "Monsterrat", sans-serif;
     font-size: 20px;
     padding: 0 0 20px 30px;
     grid-row: 3;
+}
+
+.book-rating-average-google {
+    font-size: 20px;
+    padding: 0 0 20px 30px;
+    grid-row: 4;
+}
+
+.book-rating-site {
+    display: inline-block;
+}
+
+.book-rating-site-logo {
+    width: 20px;
+    height: 20px;
     display: inline-block;
 }
 
 .book-rating-header {
-    font-family: "Monsterrat", sans-serif;
     font-size: 24px;
     font-weight: 500;
     margin: 20px 0 0 30px;
@@ -273,7 +287,6 @@ body {
 }
 
 .book-rating-sign-in {
-    font-family: "Monsterrat", sans-serif;
     font-size: 30px;
     font-weight: 500;
     grid-row: 1/span 2;
@@ -364,4 +377,37 @@ body {
     font-size: 16px;
     margin: 10px 10px 10px 0;
     padding: 0;
+}
+
+.recommendation-position {
+    font-family: "Monsterrat", sans-serif;
+    font-weight: 400;
+    font-size: 24px;
+    grid-column: 3;
+    grid-row: 1/span 3;
+    align-self: center;
+}
+
+.recommendation-list {
+    margin: 50px 15%;
+    list-style-position: inside;
+    padding: 0 0 50px 0;
+}
+
+.recommendation-info {
+    font-family: "Monsterrat", sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    margin: 50px 15%;
+    width: 50%;
+}
+
+.recommendation-info-header {
+    font-weight: 500;
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.admin-page {
+    margin: 20px 20%;
 }

@@ -24,12 +24,12 @@
                         <a class="navigation-link" asp-area="" asp-controller="Books" asp-action="Browse">Browse</a>
                     </li>
                     <li>
-                        <a class="navigation-link" asp-area="" asp-controller="Home" asp-action="Privacy">Recommendations</a>
+                        <a class="navigation-link" asp-area="" asp-controller="Books" asp-action="Recommendations">Recommendations</a>
                     </li>
                     @if (SignInManager.IsSignedIn(User) && await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Admin"))
                     {
                         <li>
-                            <a class="navigation-link" asp-area="" asp-controller="Books" asp-action="AddBook">Add Books</a>
+                            <a class="navigation-link" asp-area="" asp-controller="Administration" asp-action="AdminPanel">Administration</a>
                         </li>
                     }
                 </ul>

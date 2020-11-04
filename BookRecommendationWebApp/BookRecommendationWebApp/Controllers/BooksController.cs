@@ -5,10 +5,12 @@ using System.Linq;
 using System.Net;
 using System.Security.AccessControl;
 using System.Threading.Tasks;
+using BookRecommendationWebApp.API;
 using BookRecommendationWebApp.Data;
 using BookRecommendationWebApp.Models;
 using BookRecommendationWebApp.Models.Accounts;
 using BookRecommendationWebApp.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -46,7 +48,6 @@ namespace BookRecommendationWebApp.Controllers
                 bookList = _dbContext.Books
                     .Where(x => x.BookCategories.Any(c => c.CategoryId == categoryId)).ToList();
                 selectedCategory = _dbContext.Categories.Find(categoryId);
-
             }
 
             if (!IsNullOrEmpty(searchInput))
@@ -106,7 +107,75 @@ namespace BookRecommendationWebApp.Controllers
             }
         }
 
-        public IActionResult BookDetails(int bookId)
+        [HttpGet]
+        public IActionResult EditBook(int bookId)
+        {
+            Book book = _dbContext.Books.Find(bookId);
+            var editBookViewModel = new EditBookViewModel
+            {
+                BookId = bookId,
+                Title = book.Title,
+                Author = book.Author,
+                Isbn = book.Isbn,
+                Description = book.Description,
+                SelectedCategories = _dbContext.Categories
+                    .Where(c => c.BookCategories.Any(bc => bc.BookId == bookId)).Select(c=>c.CategoryId).ToList(),
+                Categories = _dbContext.Categories.ToList()
+            };
+            return View(editBookViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult EditBook(EditBookViewModel editBookViewModel)
+        {
+            Book book = _dbContext.Books.Find(editBookViewModel.BookId);
+            if (book != null)
+            {
+                book.Title = editBookViewModel.Title;
+                book.Author = editBookViewModel.Author;
+                book.Isbn = editBookViewModel.Isbn;
+                book.Description = editBookViewModel.Description;
+                if (editBookViewModel.ImageFile != null)
+                {
+                    string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "images/covers", book.ImageFile);
+                    System.IO.File.Delete(filePath);
+                    book.ImageFile = UpdateCoverImage(editBookViewModel);
+                }
+
+                List<BookCategory> bookCategories = _dbContext.BookCategories
+                    .Where(bc => bc.BookId == editBookViewModel.BookId).ToList();
+
+                foreach (var bookCategory in bookCategories)
+                {
+                    _dbContext.BookCategories.Remove(bookCategory);
+                }
+
+                List<Category> categories = _dbContext.Categories.Where(x => editBookViewModel.SelectedCategories.Contains(x.CategoryId)).ToList();
+                foreach (var category in categories)
+                {
+                    _dbContext.BookCategories.Add(new BookCategory
+                    {
+                        Category = category,
+                        Book = book
+                    });
+                }
+                _dbContext.SaveChanges();
+            }
+            return RedirectToAction(nameof(AdministrationController.AdminPanel), "Administration");
+        }
+
+        [HttpPost]
+        public IActionResult DeleteBook(int bookId)
+        {
+            Book book = _dbContext.Books.Find(bookId);
+            string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "images/covers", book.ImageFile);
+            System.IO.File.Delete(filePath);
+            _dbContext.Books.Remove(book);
+            _dbContext.SaveChanges();
+            return RedirectToAction(nameof(AdministrationController.AdminPanel), "Administration");
+        }
+
+        public async Task<IActionResult> BookDetails(int bookId)
         {
             Book book = _dbContext.Books.Find(bookId);
             if (book==null)
@@ -120,8 +189,6 @@ namespace BookRecommendationWebApp.Controllers
             var ratingQuery = _dbContext.Reviews.Where(r =>
                 r.User.Id == _userManager.GetUserId(this.User) && r.Book.BookId == bookId);
 
-            var allRatingsQuery = _dbContext.Reviews.Where(r => r.Book.BookId == bookId);
-
             BookDetailsViewModel bookDetailsView = new BookDetailsViewModel
             {
                 BookId = bookId,
@@ -132,8 +199,9 @@ namespace BookRecommendationWebApp.Controllers
                 ImageFileName = book.ImageFile,
                 Categories = categories,
                 UserRating = ratingQuery.Any() ? ratingQuery.First().Rating : 0,
-                AverageRating = allRatingsQuery.Any() ? CalculateAverageRating(allRatingsQuery.ToList()) : 0,
-                RatingsCount = allRatingsQuery.Count()
+                BwaRating = GetBwaRating(bookId),
+                GoogleBooksRating = await GetGoogleBooksRating(book.Isbn)
+
             };
             return View(bookDetailsView);
         }
@@ -157,11 +225,37 @@ namespace BookRecommendationWebApp.Controllers
 
             for (int i = 0; i < userPreferences.Count; i++)
             {
-                userPreferences[i].Preference = 0.1 *(rating - 3) + 0.05;
+                userPreferences[i].Preference += 0.1 *(rating - 3) + 0.05;
             }
 
             _dbContext.SaveChanges();
             return RedirectToAction("BookDetails", new { bookId = bookID});
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Recommendations()
+        {
+            User user = await _userManager.GetUserAsync(this.User);
+            List<UserPreference> userPreferences = _dbContext.UserPreferences
+                .Where(up => up.UserId == _userManager.GetUserId(this.User)).ToList();
+            List<Book> books = _dbContext.Books.Where(b => b.Reviews.All(r => r.User != user)).ToList();
+
+            for(int i=0; i<books.Count; i++)
+            {
+                List<Category> categories = _dbContext.Categories
+                    .Where(c => c.BookCategories.Any(bc => bc.BookId == books[i].BookId)).ToList();
+                books[i].UserPreferenceValue =
+                    CalculatePreference(userPreferences.Where(up => categories.Contains(up.Category)).ToList());
+
+            }
+
+            RecommendationsViewModel recommendationsViewModel = new RecommendationsViewModel
+            {
+                RecommendedBooks = books.OrderByDescending(b => b.UserPreferenceValue).Take(10).ToList(),
+                ProvidedEnoughReviews = _dbContext.Reviews.Count(r => r.User == user) >= 3
+            };
+
+            return View(recommendationsViewModel);
         }
 
         private string UploadCoverImage(AddBookViewModel addBookViewModel)
@@ -181,6 +275,41 @@ namespace BookRecommendationWebApp.Controllers
             return fileName;
         }
 
+        private string UpdateCoverImage(EditBookViewModel editBookViewModel)
+        {
+            string fileName = editBookViewModel.Isbn + "_" + editBookViewModel.ImageFile.FileName;
+            string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "images/covers", fileName);
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                editBookViewModel.ImageFile.CopyTo(fileStream);
+            }
+
+            return fileName;
+        }
+
+        private Rating GetBwaRating(int bookId)
+        {
+            var allRatingsQuery = _dbContext.Reviews.Where(r => r.Book.BookId == bookId);
+
+            return new Rating
+            {
+                AverageRating = allRatingsQuery.Any() ? CalculateAverageRating(allRatingsQuery.ToList()) : 0,
+                RatingsCount = allRatingsQuery.Count()
+            };
+        }
+
+        private async Task<Rating> GetGoogleBooksRating(string isbn)
+        {
+
+            GoogleBooksApiResponse response = await GoogleBooksApiProcessor.GetBookByIsbn(isbn);
+
+            return new Rating
+            {
+                AverageRating = response.Items?[0].VolumeInfo.AverageRating ?? 0,
+                RatingsCount = response.Items?[0].VolumeInfo.RatingsCount ?? 0
+            };
+        }
+
         private double CalculateAverageRating(List<Review> reviews)
         {
             double ratingSum = 0;
@@ -190,6 +319,17 @@ namespace BookRecommendationWebApp.Controllers
             }
 
             return Math.Round(ratingSum / reviews.Count, 2);
+        }
+
+        private double CalculatePreference(List<UserPreference> preferences)
+        {
+            double sum = 0;
+            foreach (var preference in preferences)
+            {
+                sum += preference.Preference;
+            }
+
+            return sum / preferences.Count;
         }
     }
 }

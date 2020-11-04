@@ -107,6 +107,74 @@ namespace BookRecommendationWebApp.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult EditBook(int bookId)
+        {
+            Book book = _dbContext.Books.Find(bookId);
+            var editBookViewModel = new EditBookViewModel
+            {
+                BookId = bookId,
+                Title = book.Title,
+                Author = book.Author,
+                Isbn = book.Isbn,
+                Description = book.Description,
+                SelectedCategories = _dbContext.Categories
+                    .Where(c => c.BookCategories.Any(bc => bc.BookId == bookId)).Select(c=>c.CategoryId).ToList(),
+                Categories = _dbContext.Categories.ToList()
+            };
+            return View(editBookViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult EditBook(EditBookViewModel editBookViewModel)
+        {
+            Book book = _dbContext.Books.Find(editBookViewModel.BookId);
+            if (book != null)
+            {
+                book.Title = editBookViewModel.Title;
+                book.Author = editBookViewModel.Author;
+                book.Isbn = editBookViewModel.Isbn;
+                book.Description = editBookViewModel.Description;
+                if (editBookViewModel.ImageFile != null)
+                {
+                    string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "images/covers", book.ImageFile);
+                    System.IO.File.Delete(filePath);
+                    book.ImageFile = UpdateCoverImage(editBookViewModel);
+                }
+
+                List<BookCategory> bookCategories = _dbContext.BookCategories
+                    .Where(bc => bc.BookId == editBookViewModel.BookId).ToList();
+
+                foreach (var bookCategory in bookCategories)
+                {
+                    _dbContext.BookCategories.Remove(bookCategory);
+                }
+
+                List<Category> categories = _dbContext.Categories.Where(x => editBookViewModel.SelectedCategories.Contains(x.CategoryId)).ToList();
+                foreach (var category in categories)
+                {
+                    _dbContext.BookCategories.Add(new BookCategory
+                    {
+                        Category = category,
+                        Book = book
+                    });
+                }
+                _dbContext.SaveChanges();
+            }
+            return RedirectToAction(nameof(AdministrationController.AdminPanel), "Administration");
+        }
+
+        [HttpPost]
+        public IActionResult DeleteBook(int bookId)
+        {
+            Book book = _dbContext.Books.Find(bookId);
+            string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "images/covers", book.ImageFile);
+            System.IO.File.Delete(filePath);
+            _dbContext.Books.Remove(book);
+            _dbContext.SaveChanges();
+            return RedirectToAction(nameof(AdministrationController.AdminPanel), "Administration");
+        }
+
         public async Task<IActionResult> BookDetails(int bookId)
         {
             Book book = _dbContext.Books.Find(bookId);
@@ -202,6 +270,18 @@ namespace BookRecommendationWebApp.Controllers
                 {
                     addBookViewModel.ImageFile.CopyTo(fileStream);
                 }
+            }
+
+            return fileName;
+        }
+
+        private string UpdateCoverImage(EditBookViewModel editBookViewModel)
+        {
+            string fileName = editBookViewModel.Isbn + "_" + editBookViewModel.ImageFile.FileName;
+            string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "images/covers", fileName);
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                editBookViewModel.ImageFile.CopyTo(fileStream);
             }
 
             return fileName;
